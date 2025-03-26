@@ -11,5 +11,7 @@ namespace LojaSeven.Entidades
         {
             _configuration = configuration;
         }
+
+        public DbSet<Produtos> Produtos { get; set; }
     }
 }

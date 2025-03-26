@@ -36,7 +36,7 @@ builder.Services.AddControllersWithViews();
 var app = builder.Build();
 
 // quando compilado direciona para este endpoint
-//app.MapGet("/", () => Results.Redirect("/Menu/Menu"));
+app.MapGet("/", () => Results.Redirect("/Produtos/Index"));
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
