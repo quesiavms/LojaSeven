@@ -1,0 +1,15 @@
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace LojaSeven.Entidades
+{
+    public class ConnectionDB : DbContext
+    {
+        private readonly IConfiguration _configuration;
+
+        public ConnectionDB(IConfiguration configuration, DbContextOptions<ConnectionDB> options)
+            : base(options)
+        {
+            _configuration = configuration;
+        }
+    }
+}
