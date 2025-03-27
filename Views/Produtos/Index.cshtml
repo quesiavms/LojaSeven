@@ -7,6 +7,9 @@
 
 <!-- Linkando o arquivo ccs da tabela -->
 <link href="/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <div class="container" style="margin-top: 50px">
 	<h3 class="text-center"> Produtos Loja Seven</h3>
@@ -21,12 +24,182 @@
             <tbody>
                 @foreach (var produto in Model)
                 {
-                    <tr>
+                    <tr id="userRow_@produto.id_produto">
                         <td>@produto.nome_produto</td>
                         <td>@produto.valor_produto</td>
+                        <td><a href="#" class="btn btn-success" onclick="EditarProduto(@produto.id_produto)"><i class="fas fa-edit"></i></a></td>
+                        <td><a href="#" class="btn btn-danger" onclick="ExcluirProduto(@produto.id_produto)"><i class="fas fa-trash-alt"></i></a></td>
                     </tr>
                 }
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2">
+                        <button class="btn btn-secondary" id="btnNovoProduto">Novo Produto</button>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
 	</div>
 </div>
+
+<div class="modal fade" id="ModalNovoProduto">
+    <div class="modal-dialog" style="max-width: 30%; height: 80%; margin-top: 5%;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 class="modal-title">Novo Produto</h4>
+            </div>
+            <div class="modal-body" id="ModalNovoProdutoBody">
+                <form id="myForm">
+                    <input type="hidden" id="id_produto" />
+                    <input type="text" id="nome_produto" class="form-control" placeholder="Produto">
+                    <input type="text" id="valor_produto" class="form-control" placeholder="Valor">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="InserirProduto()">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ModalEditarProduto">
+    <div class="modal-dialog" style="max-width: 30%; height: 80%; margin-top: 5%;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 class="modal-title">Editar Produto</h4>
+            </div>
+            <div class="modal-body" id="ModalEditarProdutoBody">
+                <form id="myForm">
+                    <input type="hidden" id="edit_id_produto" />
+                    <input type="text" id="edit_nome_produto" class="form-control" placeholder="Produto">
+                    <input type="text" id="edit_valor_produto" class="form-control" placeholder="Valor">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" onclick="AtualizarProduto()">Atualizar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalExcluirProduto">
+    <div class="modal-dialog" style="max-width: 30%; height: 80%; margin-top: 5%;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 class="modal-title">Excluir Produto</h4>
+            </div>
+
+            <div class="modal-body" id="ModalExcluirProdutoBody">
+                <h5>Tem certeza que desej excluir este produto?</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <a href="#" class="btn btn-success" id="btnDeletar" onclick="DeletarProduto()">Confirmar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        $("#btnNovoProduto").click(function() {
+            $("#ModalNovoProduto").modal("show");
+        });
+    });
+
+        var InserirProduto = function(){
+        var dadoProduto= {
+            nome_produto : $("#nome_produto").val(),
+            valor_produto : $("#valor_produto").val()
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/Produtos/InserirProduto",
+            data: JSON.stringify(dadoProduto),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(response){
+                    $("#ModalNovoProduto").modal("hide");
+                    location.reload();
+                    alert("Novo Produto adicionado com sucesso !!");
+                }
+        });
+    }
+
+    var EditarProduto = function(idProduto){
+
+        $.ajax({
+            type: "GET",
+            url: "/Produtos/EditarProduto?id_produto=" + idProduto,
+            success: function(response){
+            $("#edit_id_produto").val(response.id_produto);
+            $("#edit_nome_produto").val(response.nome_produto);
+            $("#edit_valor_produto").val(response.valor_produto);
+
+            $("#ModalEditarProduto").modal("show");
+            }
+        });
+    }
+
+    var AtualizarProduto = function(){
+        var dadoProduto = {
+            id_produto: $("#edit_id_produto").val(),
+            nome_produto: $("#edit_nome_produto").val(),
+            valor_produto: $("#edit_valor_produto").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Produtos/AtualizarProduto",
+            data: JSON.stringify(dadoProduto),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function(response){
+                $("#ModalEditarProduto").modal("hide");
+                location.reload();
+                alert("Produto atualizado com sucesso!");
+            },
+            error: function(xhr, status, error) {
+                alert("Erro ao atualizar o produto.");
+                console.log(error);
+            }
+        });
+    };
+
+    var ExcluirProduto = function(idProduto){
+        $("#id_produto").val(idProduto);
+        $("#ModalExcluirProduto").modal("show");
+    };
+
+    var DeletarProduto = function(){
+        var id_produto = $("#id_produto").val();
+
+        $.ajax({
+            type: "POST",
+            url : "/Produtos/DeletarProduto?id_produto=" + id_produto,
+            success : function(response){
+                if (response.success) {
+                $("#ModalExcluirProduto").modal("hide");
+                $("#userRow_" + id_produto).remove();
+                alert(response.message);
+            } else {
+                alert("Erro ao excluir o produto!");
+            }
+            }
+        })
+    }
+
+
+</script>
