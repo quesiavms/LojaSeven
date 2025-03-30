@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Lateral</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            height: 100vh;
+            background-color: #333;
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+        }
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+        .content {
+            margin-left: 200px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="@Url.Action("Index", "Home")">Home</a>
+        <a href="@Url.Action("Index", "Produtos")">Produtos</a>
+        <a href="@Url.Action("Index", "Compras")">Nova Compra</a>
+        <a href="@Url.Action("Index","AllCompras")">Todas as Compras</a>
+    </div>
+</body>
+</html>
+
+
+
