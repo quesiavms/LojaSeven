@@ -2,7 +2,7 @@
 
 namespace LojaSeven.Controllers
 {
-    public class AllCompras : Controller
+    public class AllComprasController : Controller
     {
         public IActionResult Index()
         {
