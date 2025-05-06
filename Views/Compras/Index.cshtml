@@ -1,8 +1,8 @@
-﻿@model List<LojaSeven.Models.ProdutosViewModel>
+﻿@model LojaSeven.Models.ComprasViewModel
 
 @{
-    ViewData["Title"] = "Compras Page";
-    Layout = null;
+	ViewData["Title"] = "Compras Page";
+	Layout = null;
 }
 <!-- Linkando o arquivo ccs da tabela -->
 <link href="/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -11,96 +11,112 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <div class="container mt-4">
-    <h2>Nova Compra</h2>
+	<h2>Nova Compra</h2>
 
-    <div class="row">
-        <!-- Coluna esquerda: Formulário -->
-        <div class="col-md-6">
-            <div class="form-group">
-                <label>Nome:</label>
-                <input type="text" class="form-control" placeholder="Digite seu nome:">
-            </div>
+	<div class="row">
+		<!-- Coluna esquerda: Formulário -->
+		<div class="col-md-6">
+			<div class="form-group">
+				<label>Nome:</label>
+				<input type="text" class="form-control" placeholder="Digite seu nome:">
+			</div>
 
-            <div class="form-group">
-                <div class="d-flex align-items-end">
-                    <div class="d-flex flex-column mr-3" style="max-width: 300px;">
-                        <label for="produtosSelect">Produto:</label>
-                        <select id="produtosSelect" class="form-control">
-                            @foreach (var produto in Model)
-                            {
-                                <option value="@produto.id_produto" data-valor="@produto.valor_produto">@produto.nome_produto</option>
-                            }
-                        </select>
-                    </div>
+			<div class="form-group">
+				<div class="d-flex align-items-end">
+					<div class="d-flex flex-column mr-3" style="max-width: 300px;">
+						<label for="produtosSelect">Produto:</label>
+						<select id="produtosSelect" class="form-control">
+							@foreach (var produto in Model.Produtos)
+							{
+								<option value="@produto.id_produto" data-valor="@produto.valor_produto">@produto.nome_produto</option>
+							}
+						</select>
+					</div>
 
-                    <div class="d-flex flex-column mr-3" style="width: 100px;">
-                        <label for="qntdProduto">Quantidade:</label>
-                        <input type="number" id="qntdProduto" class="form-control" placeholder="0" />
-                    </div>
+					<div class="d-flex flex-column mr-3" style="width: 100px;">
+						<label for="qntdProduto">Quantidade:</label>
+						<input type="number" id="qntdProduto" class="form-control" placeholder="0" />
+					</div>
 
-                    <div class="d-flex flex-column">
-                        <label style="visibility: hidden;">Botões</label>
-                        <div class="d-flex">
-                            <button type="button" class="btn btn-success mr-2" onclick="AddProdutoEscolhido()">Adicionar</button>
-                            <button type="button" class="btn btn-secondary" onclick="DesfazerUltimoProduto()">Desfazer</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+					<div class="d-flex flex-column">
+						<label style="visibility: hidden;">Botões</label>
+						<div class="d-flex">
+							<button type="button" class="btn btn-success mr-2" onclick="AddProdutoEscolhido()">Adicionar</button>
+							<button type="button" class="btn btn-secondary" onclick="DesfazerUltimoProduto()">Desfazer</button>
+						</div>
+					</div>
+				</div>
+			</div>
 
-            <button class="btn btn-success mt-3" onclick="ConfirmarCompra()">Confirmar Compra</button>
-        </div>
+			<div class="form-group">
+				<div class="d-flex align-items-end">
+					<div class="d-flex flex-column mr-3" style="max-width: 300px;">
+						<label for="pagamentoSelect">Metodo de Pagamento:</label>
+						<select id="pagamentoSelect" class="form-control">
+							@foreach (var pagamento in Model.TipoPagamento)
+							{
+								<option value="@pagamento.IdPagamento" data-valor="@pagamento.Tipo">@pagamento.Tipo</option>
+							}
+						</select>
+					</div>
+				</div>
+			</div>
 
-        <!-- Coluna direita: Lista -->
-        <div class="col-md-6">
-            <h5>Produtos Adicionados:</h5>
-            <table class="table table-bordered table-striped mt-2">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Produto</th>
-                        <th>Valor (R$)</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelaProdutos">
-                </tbody>
-            </table>
-        </div>
-    </div>
+			<button class="btn btn-success mt-3" onclick="ConfirmarCompra()">Confirmar Compra</button>
+
+		</div>
+
+		<!-- Coluna direita: Lista -->
+		<div class="col-md-6">
+			<h5>Produtos Adicionados:</h5>
+			<table class="table table-bordered table-striped mt-2">
+				<thead class="thead-dark">
+					<tr>
+						<th>Produto</th>
+						<th>Valor (R$)</th>
+					</tr>
+				</thead>
+				<tbody id="tabelaProdutos">
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>
 
+
 <div class="modal fade" id="ModalListadeCompras">
-    <div class="modal-dialog" style="max-width: 30%; height: 80%; margin-top: 5%;">
-        <div class="modal-content">
+	<div class="modal-dialog" style="max-width: 30%; height: 80%; margin-top: 5%;">
+		<div class="modal-content">
 
-            <div class="modal-header">
-                <a href="#" class="close" data-dismiss="modal">&times;</a>
-                <h4 class="modal-title">Lista de Produtos</h4>
-            </div>
+			<div class="modal-header">
+				<a href="#" class="close" data-dismiss="modal">&times;</a>
+				<h4 class="modal-title">Lista de Produtos</h4>
+			</div>
 
-            <div class="modal-body" id="ModalExcluirProdutoBody">
-                <table class="table table-bordered table-striped mt-2">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Produto</th>
-                            <th>Valor (R$)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaProdutosModal">
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Total</th>
-                            <th id="valorTotal">R$ 0,00</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CancelarCompra()">Cancelar Compra</button>
-                <a href="#" class="btn btn-success" id="btnDeletar" onclick="SalvarCompra()">Salvar Compra</a>
-            </div>
-        </div>
-    </div>
+			<div class="modal-body" id="ModalExcluirProdutoBody">
+				<table class="table table-bordered table-striped mt-2">
+					<thead class="thead-dark">
+						<tr>
+							<th>Produto</th>
+							<th>Valor (R$)</th>
+						</tr>
+					</thead>
+					<tbody id="tabelaProdutosModal">
+					</tbody>
+					<tfoot>
+						<tr>
+							<th>Total</th>
+							<th id="valorTotal">R$ 0,00</th>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CancelarCompra()">Cancelar Compra</button>
+				<a href="#" class="btn btn-success" id="btnDeletar" onclick="SalvarCompra()">Salvar Compra</a>
+			</div>
+		</div>
+	</div>
 </div>
 
 
@@ -109,82 +125,102 @@
 
 
 <script>
-    let ultimaQuantidadeAdicionada = 0;
-    
-    function AddProdutoEscolhido(){
-        var select = $("#produtosSelect option:selected");
-        var nome = select.text();
-        var valor = select.data("valor");
+	let ultimaQuantidadeAdicionada = 0;
 
-        var quantidade = parseInt($("#qntdProduto").val());
+	function AddProdutoEscolhido(){
+		var select = $("#produtosSelect option:selected");
+		var nome = select.text();
+		var valor = select.data("valor");
 
-        if(isNaN(quantidade || quantidade <= 0)){
-            alert("Informa uma quantidade valida!");
-            return;
-        }
+		var quantidade = parseInt($("#qntdProduto").val());
 
-        ultimaQuantidadeAdicionada = quantidade;
+		if(isNaN(quantidade || quantidade <= 0)){
+			alert("Informa uma quantidade valida!");
+			return;
+		}
 
-        for (var i=0; i < quantidade; i++){
-            var linha = `
-                <tr>
-                    <td>${nome}</td>
-                    <td>${valor}</td>
-                </tr>
-            `;
+		ultimaQuantidadeAdicionada = quantidade;
 
-            $("#tabelaProdutos").append(linha);
-        }
-        $("#qntdProduto").val("");
-    }
+		for (var i=0; i < quantidade; i++){
+			var linha = `
+				<tr>
+					<td>${nome}</td>
+					<td>${valor}</td>
+				</tr>
+			`;
 
-    var ConfirmarCompra = function(){
-        let html = $("#tabelaProdutos").html();
-        $("#tabelaProdutosModal").html(html);
+			$("#tabelaProdutos").append(linha);
+		}
+		$("#qntdProduto").val("");
+	}
 
-        let total = 0;
-        $("#tabelaProdutosModal tr").each(function(){
-            let valor = parseFloat($(this).find("td:eq(1)").text().replace("R$", "").replace(",", ".").trim());
-            if (!isNaN(valor)) {
-                total += valor;
-            }
-        });
+	var ConfirmarCompra = function(){
+		let html = $("#tabelaProdutos").html();
+		$("#tabelaProdutosModal").html(html);
 
-        $("#valorTotal").text("R$" + total.toFixed(2).replace(".",","));
+		let total = 0;
+		$("#tabelaProdutosModal tr").each(function(){
+			let valor = parseFloat($(this).find("td:eq(1)").text().replace("R$", "").replace(",", ".").trim());
+			if (!isNaN(valor)) {
+				total += valor;
+			}
+		});
 
-        $('#ModalListadeCompras').modal('show');
-    }
+		$("#valorTotal").text("R$" + total.toFixed(2).replace(".",","));
 
-    function DesfazerUltimoProduto(){
-        let linhas = $("#tabelaProdutos tr");
-        for (let i=0; i < ultimaQuantidadeAdicionada; i++){
-            linhas.last().remove();
-            linhas = $("#tabelaProdutos tr");
-        }
+		$('#ModalListadeCompras').modal('show');
+	}
 
-        ultimaQuantidadeAdicionada = 0;
-    }
+	function DesfazerUltimoProduto(){
+		let linhas = $("#tabelaProdutos tr");
+		for (let i=0; i < ultimaQuantidadeAdicionada; i++){
+			linhas.last().remove();
+			linhas = $("#tabelaProdutos tr");
+		}
 
-    function CancelarCompra(){
-        $("#tabelaProdutos").html('');
-        $("#tabelaProdutosModal").html('');
-        $("#valorTotal").text("R$ 0,00");
-        $("#ModalListadeCompras").modal('hide');
-    }
+		ultimaQuantidadeAdicionada = 0;
+	}
 
-    var SalvarCompra = function(){
-        var select = $("produtosSelect option:selected");
-        var idProduto = select.val();
+	function CancelarCompra(){
+		$("#tabelaProdutos").html('');
+		$("#tabelaProdutosModal").html('');
+		$("#valorTotal").text("R$ 0,00");
+		$("#ModalListadeCompras").modal('hide');
 
-        $.ajax({
-            type: "POST",
-            url: "/Compras/SalvarCompra",
-            data: idProduto,
-            success: function(response){
-                alert("Deu bom na compra");
-            }
-        })
-    }
+	}
+
+	var SalvarCompra = function(){
+	var nome = $("input[type='text']").val();
+		var metodoPagamento = $("#pagamentoSelect").val();
+
+		var linhas = $("#tabelaProdutos tr");
+		var produtos = [];
+
+		linhas.each(function () {
+			var nomeProduto = $(this).find("td:eq(0)").text();
+			var valorProduto = $(this).find("td:eq(1)").text();
+			var idProduto = $("#produtosSelect option").filter(function () {
+				return $(this).text() === nomeProduto;
+			}).val();
+
+			produtos.push({
+				Nome: nome,
+				IdProduto: parseInt(idProduto),
+				IdTipoPagamento: parseInt(metodoPagamento)
+			});
+		});
+
+	$.ajax({
+		type: "POST",
+		url: "/Compras/SalvarCompra",
+		contentType: "application/json",
+		data: JSON.stringify(produtos),
+		success: function (response) {
+			alert(response.message);
+			location.reload();
+		}
+	});
+};
 
 </script>
 

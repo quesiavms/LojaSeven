@@ -13,5 +13,8 @@ namespace LojaSeven.Entidades
         }
 
         public DbSet<Produtos> Produtos { get; set; }
+
+        public DbSet<TipoPagamento> TipoPagamento { get; set; }
+        public DbSet<Compra> Compra { get;set; }
     }
 }

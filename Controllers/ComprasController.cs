@@ -16,19 +16,32 @@ namespace LojaSeven.Controllers
         {
             List<Produtos> produtosList = _connection.Produtos.ToList();
 
-            List<ProdutosViewModel> produtosViewModels = produtosList.Select(x => new ProdutosViewModel
-            {
-                id_produto = x.id_produto,
-                nome_produto = x.nome_produto,
-                valor_produto = x.valor_produto
-            }).ToList();
+            List<TipoPagamento> tiposPagamento = _connection.TipoPagamento.ToList();
 
-            return View(produtosViewModels);
+            var viewModel = new ComprasViewModel
+            {
+                Produtos = produtosList,
+                TipoPagamento = tiposPagamento
+            };
+
+            return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult SalvarCompra()
+        public IActionResult SalvarCompra([FromBody] List<CompraViewModel> compra)
         {
+            if (compra == null || !compra.Any())
+                return BadRequest("Lista Vazia maluco");
+
+            var compraParaSalvar = compra.Select(x => new Compra
+            {
+                Nome = x.Nome,
+                IdProduto = x.idProduto,
+                IdTipoPagamento = x.IdTipoPagamento
+            }).ToList();
+
+            _connection.Compra.AddRange(compraParaSalvar);
+            _connection.SaveChanges();
 
             return Json(new { success = true, message = "Compra realizada com sucesso!" });
         }
