@@ -18,7 +18,7 @@ namespace LojaSeven.Controllers
 
             List<TipoPagamento> tiposPagamento = _connection.TipoPagamento.ToList();
 
-            var viewModel = new ComprasViewModel
+            var viewModel = new AllComprasViewModel
             {
                 Produtos = produtosList,
                 TipoPagamento = tiposPagamento

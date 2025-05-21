@@ -12,5 +12,10 @@ namespace LojaSeven.Entidades
         public string Nome { get; set; }
         public int IdProduto { get; set; }
         public int IdTipoPagamento { get; set; }
+
+        [ForeignKey("IdTipoPagamento")]
+        public TipoPagamento TipoPagamento { get; set; }
+        [ForeignKey("IdProduto")]
+        public Produtos Produtos { get; set; }
     }
 }

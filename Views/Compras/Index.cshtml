@@ -1,4 +1,4 @@
-﻿@model LojaSeven.Models.ComprasViewModel
+﻿@model LojaSeven.Models.AllComprasViewModel
 
 @{
 	ViewData["Title"] = "Compras Page";
@@ -10,7 +10,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-<div class="container mt-4">
+@Html.Partial("_LateralMenu")
+<div class="container mt-4" style="margin-top: 50px; margin-left: 210px">
 	<h2>Nova Compra</h2>
 
 	<div class="row">
@@ -118,11 +119,6 @@
 		</div>
 	</div>
 </div>
-
-
-
-@Html.Partial("_LateralMenu");
-
 
 <script>
 	let ultimaQuantidadeAdicionada = 0;

@@ -1,10 +1,65 @@
-﻿@{
+﻿@model LojaSeven.Models.ComprasPesquisaViewModel
+@{
     ViewData["Title"] = "All Compras Page";
     Layout = null;
 }
 
-<div class="content">
-    <h1>Historico de Compras</h1>
+<!-- Linkando o arquivo ccs da tabela -->
+<link href="/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+@Html.Partial("_LateralMenu")
+
+<div class="container mt-5" style="margin-top: 50px; margin-left: 210px">
+    <!-- Campo de pesquisa -->
+    <div class="row mb-4">
+        <div class="col-12 col-md-6">
+            <label class="form-label">Pesquisa</label>
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.Search, new { @class = "form-control", placeholder = "Buscar..." })
+                <button type="button" class="btn btn-secondary">Search</button>
+            </div>
+    </div>
+
+    <div class="table-responsive" style="margin-top: 20px">
+        <table class="table table-bordered table-striped text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nome</th>
+                    <th>Produto</th>
+                    <th>Valor</th>
+                    <th>Pagamento</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                @foreach (var item in Model.Compras)
+                {
+                    <tr>
+                        <td>@item.NomePessoa</td>
+                        <td>@item.NomeProduto</td>
+                        <td>@item.ValorProduto</td>
+                        <td>@item.TipoDoPagamento</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
-@Html.Partial("_LateralMenu");
+
+<script>
+        $("#Search").on("input", function() {
+            var searchText = $(this).val();
+
+            $.ajax({
+                type: "GET",
+                url: "AllCompras/GetSearchRecord",
+                data: { SearchText: searchText },
+                success: function(response) {
+                    $("#tableBody").html(response);
+                }
+            });
+        });
+</script>
