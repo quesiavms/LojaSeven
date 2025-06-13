@@ -37,7 +37,8 @@ namespace LojaSeven.Controllers
             {
                 Nome = x.Nome,
                 IdProduto = x.idProduto,
-                IdTipoPagamento = x.IdTipoPagamento
+                IdTipoPagamento = x.IdTipoPagamento,
+                DataCompra = DateTime.Now
             }).ToList();
 
             _connection.Compra.AddRange(compraParaSalvar);

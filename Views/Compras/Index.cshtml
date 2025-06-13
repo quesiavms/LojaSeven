@@ -23,8 +23,8 @@
 			</div>
 
 			<div class="form-group">
-				<div class="d-flex align-items-end">
-					<div class="d-flex flex-column mr-3" style="max-width: 300px;">
+				<div class="d-flex align-items-end mb-3">
+					<div class="d-flex flex-column mr-3" style="max-width: 300px; margin-right: 10px;">
 						<label for="produtosSelect">Produto:</label>
 						<select id="produtosSelect" class="form-control">
 							@foreach (var produto in Model.Produtos)
@@ -33,33 +33,27 @@
 							}
 						</select>
 					</div>
-
-					<div class="d-flex flex-column mr-3" style="width: 100px;">
+					<div class="d-flex flex-column" style="width: 100px;">
 						<label for="qntdProduto">Quantidade:</label>
 						<input type="number" id="qntdProduto" class="form-control" placeholder="0" />
 					</div>
+				</div>
 
-					<div class="d-flex flex-column">
-						<label style="visibility: hidden;">Botões</label>
-						<div class="d-flex">
-							<button type="button" class="btn btn-success mr-2" onclick="AddProdutoEscolhido()">Adicionar</button>
-							<button type="button" class="btn btn-secondary" onclick="DesfazerUltimoProduto()">Desfazer</button>
-						</div>
-					</div>
+				<div class="d-flex justify-content-start">
+					<button type="button" class="btn btn-success mr-2" style="margin-right: 10px;" onclick="AddProdutoEscolhido()">Adicionar</button>
+					<button type="button" class="btn btn-secondary" onclick="DesfazerUltimoProduto()">Desfazer</button>
 				</div>
 			</div>
 
-			<div class="form-group">
-				<div class="d-flex align-items-end">
-					<div class="d-flex flex-column mr-3" style="max-width: 300px;">
-						<label for="pagamentoSelect">Metodo de Pagamento:</label>
-						<select id="pagamentoSelect" class="form-control">
-							@foreach (var pagamento in Model.TipoPagamento)
-							{
-								<option value="@pagamento.IdPagamento" data-valor="@pagamento.Tipo">@pagamento.Tipo</option>
-							}
-						</select>
-					</div>
+			<div class="form-group mt-4">
+				<div class="d-flex flex-column" style="max-width: 300px;">
+					<label for="pagamentoSelect">Metodo de Pagamento:</label>
+					<select id="pagamentoSelect" class="form-control">
+						@foreach (var pagamento in Model.TipoPagamento)
+						{
+							<option value="@pagamento.IdPagamento" data-valor="@pagamento.Tipo">@pagamento.Tipo</option>
+						}
+					</select>
 				</div>
 			</div>
 

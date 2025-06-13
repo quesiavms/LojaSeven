@@ -12,5 +12,7 @@ namespace LojaSeven.Models
         public string NomeProduto { get; set; }
         public string ValorProduto { get; set; }
         public string TipoDoPagamento { get; set; }
+
+        public DateTime DataCompra { get; set; }
     }
 }

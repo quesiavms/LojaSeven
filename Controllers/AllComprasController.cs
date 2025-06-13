@@ -25,7 +25,8 @@ namespace LojaSeven.Controllers
                                NomePessoa = compra.Nome,
                                NomeProduto = produto.nome_produto,
                                ValorProduto = produto.valor_produto,
-                               TipoDoPagamento = pagamento.Tipo
+                               TipoDoPagamento = pagamento.Tipo,
+                               DataCompra = compra.DataCompra
                            }).ToList();
 
             var viewModel = new ComprasPesquisaViewModel
@@ -55,7 +56,8 @@ namespace LojaSeven.Controllers
                 query = query.Where(x =>
                     x.Nome.Contains(SearchText) ||
                     x.Produtos.nome_produto.Contains(SearchText) ||
-                    x.TipoPagamento.Tipo.Contains(SearchText));
+                    x.TipoPagamento.Tipo.Contains(SearchText) ||
+                    x.DataCompra.ToString("dd/MM/yyyy").Contains(SearchText));
             }
 
             viewModel.Compras = query.Select(x => new AllComprasViewModel
@@ -63,7 +65,8 @@ namespace LojaSeven.Controllers
                 NomePessoa = x.Nome,
                 NomeProduto = x.Produtos.nome_produto,
                 ValorProduto = x.Produtos.valor_produto,
-                TipoDoPagamento = x.TipoPagamento.Tipo
+                TipoDoPagamento = x.TipoPagamento.Tipo,
+                DataCompra = x.DataCompra
             }).ToList();
 
             return PartialView("SearchPartial", viewModel);
