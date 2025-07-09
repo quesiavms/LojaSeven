@@ -1,4 +1,5 @@
-﻿using LojaSeven.Entidades;
+﻿using System.Globalization;
+using LojaSeven.Entidades;
 using LojaSeven.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -54,10 +55,9 @@ namespace LojaSeven.Controllers
             if (!string.IsNullOrEmpty(SearchText))
             {
                 query = query.Where(x =>
-                    x.Nome.Contains(SearchText) ||
-                    x.Produtos.nome_produto.Contains(SearchText) ||
-                    x.TipoPagamento.Tipo.Contains(SearchText) ||
-                    x.DataCompra.ToString("dd/MM/yyyy").Contains(SearchText));
+                        x.Nome.Contains(SearchText) ||
+                        x.Produtos.nome_produto.Contains(SearchText) ||
+                        x.TipoPagamento.Tipo.Contains(SearchText));
             }
 
             viewModel.Compras = query.Select(x => new AllComprasViewModel
