@@ -1,0 +1,12 @@
+﻿@model List<LojaSeven.Entidades.Compra>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.Nome</td>
+        <td>@item.Produtos?.nome_produto</td>
+        <td>@item.Produtos?.valor_produto</td>
+        <td>@item.TipoPagamento?.Tipo</td>
+        <td>@item.DataCompra.ToString("dd/MM/yyyy")</td>
+    </tr>
+}

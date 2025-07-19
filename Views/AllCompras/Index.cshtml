@@ -1,4 +1,4 @@
-﻿@model LojaSeven.Models.ComprasPesquisaViewModel
+﻿@model LojaSeven.Models.AllComprasViewModel;
 @{
     ViewData["Title"] = "All Compras Page";
     Layout = null;
@@ -13,14 +13,53 @@
 @Html.Partial("_LateralMenu")
 
 <div class="container mt-5" style="margin-top: 50px; margin-left: 210px">
-    <!-- Campo de pesquisa -->
+    <!-- Filtros de pesquisa -->
     <div class="row mb-4">
-        <div class="col-12 col-md-6">
-            <label class="form-label">Pesquisa</label>
-            <div class="input-group">
-                @Html.TextBoxFor(m => m.Search, new { @class = "form-control", placeholder = "Buscar..." })
-                <button type="button" class="btn btn-secondary">Search</button>
-            </div>
+        <!-- Campo de Nome Comprador-->
+        <div class="form-group col-md-4">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" class="form-control" placeholder="Digite nome do comprador">
+        </div>
+        <!-- Campo de Produtos-->
+        <div class="form-group col-md-4">
+            <label for="produtosSelect">Produto:</label>
+            <select id="produtosSelect" class="form-control">
+                <option value="">Todos</option>
+                @foreach (var produto in Model.Produtos)
+                {
+                    <option value="@produto.id_produto" data-valor="@produto.valor_produto">@produto.nome_produto</option>
+                }
+            </select>
+        </div>
+        <!-- Campo de Metodo Pagamento-->
+        <div class="form-group col-md-4">
+            <label for="pagamentoSelect">Método de Pagamento:</label>
+            <select id="pagamentoSelect" class="form-control">
+                <option value="">Todos</option>
+                @foreach (var pagamento in Model.TipoPagamento)
+                {
+                    <option value="@pagamento.IdPagamento">@pagamento.Tipo</option>
+                }
+            </select>
+        </div>
+        <!-- Campos de Data-->        
+        <div class="form-group col-md-3">
+            <label for="startDate">Data Inicio:</label>
+            <input type="date" id="startDate" class="form-control" />
+        </div>
+
+        <div class="form-group col-md-3">
+            <label for="endDate">Data Fim:</label>
+            <input type="date" id="endDate" class="form-control" />
+        </div>
+        <!-- Botoes-->
+        <div class="form-group col-md-3 d-flex align-items-end">
+            <button type="button" class="btn btn-primary w-100" id="btnFilter">Pesquisar</button>
+        </div>
+
+        <div class="form-group col-md-3 d-flex align-items-end">
+            <button type="button" class="btn btn-success w-100" id="btnExport">Exportar Excel</button>
+        </div>
     </div>
 
     <div class="table-responsive" style="margin-top: 20px">
@@ -35,13 +74,13 @@
                 </tr>
             </thead>
             <tbody id="tableBody">
-                @foreach (var item in Model.Compras)
+                @foreach (var item in Model.Compra)
                 {
                     <tr>
-                        <td>@item.NomePessoa</td>
-                        <td>@item.NomeProduto</td>
-                        <td>@item.ValorProduto</td>
-                        <td>@item.TipoDoPagamento</td>
+                        <td>@item.Nome</td>
+                        <td>@item.Produtos.nome_produto</td>
+                        <td>@item.Produtos.valor_produto</td>
+                        <td>@item.TipoPagamento.Tipo</td>
                         <td>@item.DataCompra</td>
                     </tr>
                 }
@@ -51,17 +90,4 @@
 </div>
 
 
-<script>
-        $("#Search").on("input", function() {
-            var searchText = $(this).val();
-
-            $.ajax({
-                type: "GET",
-                url: "AllCompras/GetSearchRecord",
-                data: { SearchText: searchText },
-                success: function(response) {
-                    $("#tableBody").html(response);
-                }
-            });
-        });
-</script>
+<script src="~/js/AllCompras/allCompras.js"></script>

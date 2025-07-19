@@ -3,6 +3,9 @@ using LojaSeven.Entidades;
 using LojaSeven.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ClosedXML.Excel;
+using Microsoft.Identity.Client;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 
 namespace LojaSeven.Controllers
 {
@@ -16,60 +19,108 @@ namespace LojaSeven.Controllers
         }
         public IActionResult Index()
         {
-            var compras = (from compra in _connection.Compra
-                           join produto in _connection.Produtos
-                           on compra.IdProduto equals produto.id_produto
-                           join pagamento in _connection.TipoPagamento
-                           on compra.IdTipoPagamento equals pagamento.IdPagamento
-                           select new AllComprasViewModel
-                           {
-                               NomePessoa = compra.Nome,
-                               NomeProduto = produto.nome_produto,
-                               ValorProduto = produto.valor_produto,
-                               TipoDoPagamento = pagamento.Tipo,
-                               DataCompra = compra.DataCompra
-                           }).ToList();
+            var comprasList = _connection.Compra
+                .Include(c => c.Produtos)
+                .Include(c => c.TipoPagamento)
+                .ToList();
 
-            var viewModel = new ComprasPesquisaViewModel
+            var produtosList = _connection.Produtos.ToList();
+            var pagamentosList = _connection.TipoPagamento.ToList();
+
+            var viewModel = new AllComprasViewModel
             {
-                Search = "",
-                Compras = compras
+                Compra = comprasList,
+                Produtos = produtosList,
+                TipoPagamento = pagamentosList
             };
 
             return View(viewModel);
         }
 
-        [HttpGet]
-        public IActionResult GetSearchRecord(string SearchText)
+        [HttpPost]
+        public IActionResult Filter(string? name, int? produtoId, int? pagamentoId, DateTime? dataInicio, DateTime? datafim)
         {
-            var viewModel = new ComprasPesquisaViewModel
-            {
-                Search = SearchText
-            };
+            var comprasFiltradas = ObterComprasFiltradas(name, produtoId, pagamentoId, dataInicio, datafim);
 
+            return PartialView("_TabelaAllComprasPartial", comprasFiltradas);
+        }
+
+        [HttpPost]
+        public IActionResult ExportToExcel(string? name, int? produtoId, int? pagamentoId, DateTime? dataInicio, DateTime? datafim)
+        {
+            var compras = ObterComprasFiltradas(name, produtoId, pagamentoId, dataInicio, datafim);
+            var arquivoExcel = GerarExcelCompras(compras);
+
+            return File(arquivoExcel,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"ReportGloryStoryGerado_{DateTime.Now:ddMMyyyy}.xlsx");
+        }
+
+        public List<Compra> ObterComprasFiltradas(string? name, int? produtoId, int? pagamentoId, DateTime? dataInicio, DateTime? datafim)
+        {
             var query = _connection.Compra
                 .Include(c => c.Produtos)
                 .Include(c => c.TipoPagamento)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(SearchText))
+            if (!string.IsNullOrEmpty(name))
             {
-                query = query.Where(x =>
-                        x.Nome.Contains(SearchText) ||
-                        x.Produtos.nome_produto.Contains(SearchText) ||
-                        x.TipoPagamento.Tipo.Contains(SearchText));
+                query = query.Where(c => c.Nome.Contains(name));
             }
 
-            viewModel.Compras = query.Select(x => new AllComprasViewModel
+            if (produtoId.HasValue && produtoId > 0)
             {
-                NomePessoa = x.Nome,
-                NomeProduto = x.Produtos.nome_produto,
-                ValorProduto = x.Produtos.valor_produto,
-                TipoDoPagamento = x.TipoPagamento.Tipo,
-                DataCompra = x.DataCompra
-            }).ToList();
+                query = query.Where(c => c.IdProduto == produtoId);
+            }
 
-            return PartialView("SearchPartial", viewModel);
+            if (pagamentoId.HasValue && pagamentoId > 0)
+            {
+                query = query.Where(c => c.IdTipoPagamento == pagamentoId);
+            }
+
+            if (dataInicio.HasValue)
+            {
+                query = query.Where(c => c.DataCompra >= dataInicio.Value);
+            }
+
+            if (datafim.HasValue)
+            {
+                query = query.Where(c => c.DataCompra <= datafim.Value);
+            }
+
+            return query.ToList();
+        }
+
+        private byte[] GerarExcelCompras(List<Compra> compras)
+        {
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Compras");
+
+            worksheet.Cell(1, 1).Value = "Nome do Cliente"; // linha 1, coluna 1
+            worksheet.Cell(1, 2).Value = "Produto"; // linha 1, coluna 2
+            worksheet.Cell(1, 3).Value = "Valor"; // linha 1, coluna 3
+            worksheet.Cell(1, 4).Value = "Forma de Pagamento"; // linha 1, coluna 4
+            worksheet.Cell(1, 5).Value = "Data da Compra"; // linha 1, coluna 5
+
+            var headerRange = worksheet.Range("A1:E1"); // mudando cor da primeira linha, header
+            headerRange.Style.Fill.BackgroundColor = XLColor.Black;
+            headerRange.Style.Font.FontColor = XLColor.White;
+
+            int row = 2;
+            foreach (var compra in compras)
+            {
+                worksheet.Cell(row, 1).Value = compra.Nome;
+                worksheet.Cell(row, 2).Value = compra.Produtos?.nome_produto ?? "N/A";
+                worksheet.Cell(row, 3).Value = compra.Produtos?.valor_produto ?? "N/A";
+                worksheet.Cell(row, 4).Value = compra.TipoPagamento ?.Tipo?? "N/A";
+                worksheet.Cell(row, 5).Value = compra.DataCompra.ToString("dd/MM/yyyy");
+                row++;
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+
+            return stream.ToArray();
         }
     }
 }
