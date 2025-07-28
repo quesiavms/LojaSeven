@@ -1,13 +1,16 @@
 using LojaSeven.Entidades;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configurando o banco de dados
 builder.Services.AddDbContext<ConnectionDB>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    ));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
