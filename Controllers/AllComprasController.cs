@@ -110,8 +110,8 @@ namespace LojaSeven.Controllers
             foreach (var compra in compras)
             {
                 worksheet.Cell(row, 1).Value = compra.Nome;
-                worksheet.Cell(row, 2).Value = compra.Produtos?.nome_produto ?? "N/A";
-                worksheet.Cell(row, 3).Value = compra.Produtos?.valor_produto ?? "N/A";
+                worksheet.Cell(row, 2).Value = compra.Produtos?.nomeProduto ?? "N/A";
+                worksheet.Cell(row, 3).Value = compra.Produtos?.valorProduto ?? "N/A";
                 worksheet.Cell(row, 4).Value = compra.TipoPagamento ?.Tipo?? "N/A";
                 worksheet.Cell(row, 5).Value = compra.DataCompra.ToString("dd/MM/yyyy");
                 row++;
