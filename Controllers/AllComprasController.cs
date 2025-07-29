@@ -4,7 +4,6 @@ using LojaSeven.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClosedXML.Excel;
-using Microsoft.Identity.Client;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 
 namespace LojaSeven.Controllers

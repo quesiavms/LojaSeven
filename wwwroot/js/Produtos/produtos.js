@@ -30,9 +30,9 @@ var EditarProduto = function (idProduto) {
         type: "GET",
         url: "/Produtos/EditarProduto?id_produto=" + idProduto,
         success: function (response) {
-            $("#edit_id_produto").val(response.id_produto);
-            $("#edit_nome_produto").val(response.nome_produto);
-            $("#edit_valor_produto").val(response.valor_produto);
+            $("#edit_id_produto").val(response.idProduto);
+            $("#edit_nome_produto").val(response.nomeProduto);
+            $("#edit_valor_produto").val(response.valorProduto);
 
             $("#ModalEditarProduto").modal("show");
         }
