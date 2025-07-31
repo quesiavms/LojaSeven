@@ -36,6 +36,13 @@ builder.Logging.AddDebug();
 
 builder.Services.AddControllersWithViews();
 
+// configurando urls:
+#if DEBUG
+builder.WebHost.UseUrls("https://localhost:5000");
+#else
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
+#endif
+
 var app = builder.Build();
 
 // quando compilado direciona para este endpoint
@@ -61,6 +68,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.UseCors();
+app.UseCors("AllowAll");
 
 app.Run();
