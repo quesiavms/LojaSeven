@@ -15,9 +15,10 @@ namespace LojaSeven.Entidades
 
         public DateTime DataCompra { get; set; }
 
-        [ForeignKey("IdTipoPagamento")]
+        [ForeignKey(nameof(IdTipoPagamento))]
         public TipoPagamento TipoPagamento { get; set; }
-        [ForeignKey("IdProduto")]
+
+        [ForeignKey(nameof(IdProduto))]
         public Produtos Produtos { get; set; }
     }
 }

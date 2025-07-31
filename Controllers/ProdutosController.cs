@@ -21,9 +21,9 @@ namespace LojaSeven.Controllers
 
             List<ProdutosViewModel> produtosViewModels = produtosList.Select( x => new ProdutosViewModel
             {
-                id_produto = x.id_produto,
-                nome_produto = x.nome_produto,
-                valor_produto = x.valor_produto
+                id_produto = x.idProduto,
+                nome_produto = x.nomeProduto,
+                valor_produto = x.valorProduto
             }).ToList();
 
             return View(produtosViewModels);
@@ -37,9 +37,9 @@ namespace LojaSeven.Controllers
                 //insert
                 Produtos produto = new Produtos
                 {
-                    id_produto = model.id_produto,
-                    nome_produto = model.nome_produto,
-                    valor_produto = model.valor_produto
+                    idProduto = model.id_produto,
+                    nomeProduto = model.nome_produto,
+                    valorProduto = model.valor_produto
                 };
 
                 _connection.Produtos.Add(produto);
@@ -51,7 +51,7 @@ namespace LojaSeven.Controllers
         [HttpGet]
         public IActionResult EditarProduto(int id_produto)
         {
-            var produto = _connection.Produtos.FirstOrDefault(x => x.id_produto == id_produto);
+            var produto = _connection.Produtos.FirstOrDefault(x => x.idProduto == id_produto);
             if (produto == null)
             {
                 return Json(new { success = false, message = "Produto não encontrado." });
@@ -62,12 +62,12 @@ namespace LojaSeven.Controllers
         [HttpPost]
         public IActionResult AtualizarProduto([FromBody] ProdutosViewModel model)
         {
-            Produtos produto = _connection.Produtos.FirstOrDefault(x => x.id_produto == model.id_produto);
+            Produtos produto = _connection.Produtos.FirstOrDefault(x => x.idProduto == model.id_produto);
             
             if(produto != null)
             {
-                produto.nome_produto = model.nome_produto;
-                produto.valor_produto = model.valor_produto;
+                produto.nomeProduto = model.nome_produto;
+                produto.valorProduto = model.valor_produto;
                 _connection.SaveChanges();
                 return Json(new { success = true, message = "Produto atualizado com sucesso!" });
             }
@@ -77,7 +77,7 @@ namespace LojaSeven.Controllers
         [HttpPost]
         public IActionResult DeletarProduto (int id_produto)
         {
-            var produto = _connection.Produtos.SingleOrDefault(x => x.id_produto == id_produto);
+            var produto = _connection.Produtos.SingleOrDefault(x => x.idProduto == id_produto);
             
             if (produto == null)
             {

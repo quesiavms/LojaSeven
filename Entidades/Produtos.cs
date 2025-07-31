@@ -8,8 +8,8 @@ namespace LojaSeven.Entidades
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id_produto { get; set; }
-        public string nome_produto { get; set; }
-        public string valor_produto { get; set; }
+        public int idProduto { get; set; }
+        public string nomeProduto { get; set; }
+        public string valorProduto { get; set; }
     }
 }

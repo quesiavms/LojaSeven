@@ -1,13 +1,16 @@
 using LojaSeven.Entidades;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configurando o banco de dados
 builder.Services.AddDbContext<ConnectionDB>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    ));
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -32,6 +35,13 @@ builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
 builder.Services.AddControllersWithViews();
+
+// configurando urls:
+#if DEBUG
+builder.WebHost.UseUrls("https://localhost:5000");
+#else
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
+#endif
 
 var app = builder.Build();
 
@@ -58,6 +68,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.UseCors();
+app.UseCors("AllowAll");
 
 app.Run();

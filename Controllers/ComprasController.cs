@@ -31,7 +31,7 @@ namespace LojaSeven.Controllers
         public IActionResult SalvarCompra([FromBody] List<CompraViewModel> compra)
         {
             if (compra == null || !compra.Any())
-                return BadRequest("Lista Vazia maluco");
+                return BadRequest("Lista Vazia");
 
             var compraParaSalvar = compra.Select(x => new Compra
             {
