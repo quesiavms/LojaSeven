@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LojaSeven.Entidades
 {
-    [Table("Produtos")]
+    [Table("produtos")]
     public class Produtos
     {
         [Key]
